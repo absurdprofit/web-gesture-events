@@ -31,6 +31,7 @@ export default class GestureProvider {
     }
     
     bind() {
+        this.unbind();
         window.addEventListener('touchmove', this.touchMoveListener, true);
         window.addEventListener('touchend', this.touchEndListener, true);
         window.addEventListener('touchcancel', this.touchCancelListener, true);
@@ -63,37 +64,30 @@ export default class GestureProvider {
         this.touchEndTime = Date.now();
         const touchDuration = this.touchEndTime - this.touchStartTime;
         
-        if (!this.touchMoved) {
-            if (touchDuration < this.config.longPressDelay) {
-                if ((this.touchEndTime - this.lastTouchTime) < this.config.doubleTapDelay) {
-                    const doubleTapEvent = new DoubleTapEvent(this.touchStart);
-                    if (this.touchStart.touches[0]
-                        && this.touchStart.touches[0].target
-                        && this.touchStart.touches[0].target.constructor.name !== "Window"
-                    ) {
-                        this.touchStart.touches[0].target.dispatchEvent(doubleTapEvent);
+        if (this.touchStart.touches[0]
+            && this.touchStart.touches[0].target
+            && this.touchStart.touches[0].target.constructor.name !== "Window"
+        ) {
+            const target = this.touchStart.touches[0].target;
+            const longPressDelay = parseFloat((target as HTMLElement).getAttribute('longpressdelay') || '0') || this.config.longPressDelay; 
+            const doubleTapDelay = parseFloat((target as HTMLElement).getAttribute('doubletapdelay') || '0') || this.config.doubleTapDelay;
+            if (!this.touchMoved) {
+                if (touchDuration < longPressDelay) {
+                    if ((this.touchEndTime - this.lastTouchTime) < doubleTapDelay) {
+                        const doubleTapEvent = new DoubleTapEvent(this.touchStart);
+                        target.dispatchEvent(doubleTapEvent);
                         this.lastTouchTime = 0;
+                        window.dispatchEvent(doubleTapEvent);
+                    } else {
+                        const tapEvent = new TapEvent(this.touchStart, touchDuration);
+                        target.dispatchEvent(tapEvent);
+                        window.dispatchEvent(tapEvent);
                     }
-                    window.dispatchEvent(doubleTapEvent);
                 } else {
-                    const tapEvent = new TapEvent(this.touchStart, touchDuration);
-                    if (this.touchStart.touches[0]
-                        && this.touchStart.touches[0].target
-                        && this.touchStart.touches[0].target.constructor.name !== "Window"
-                    ) {
-                        this.touchStart.touches[0].target.dispatchEvent(tapEvent);
-                    }
-                    window.dispatchEvent(tapEvent);
+                    const longPressEvent = new LongPressEvent(this.touchStart, touchDuration);
+                    target.dispatchEvent(longPressEvent);
+                    window.dispatchEvent(longPressEvent);
                 }
-            } else {
-                const longPressEvent = new LongPressEvent(this.touchStart, touchDuration);
-                if (this.touchStart.touches[0]
-                    && this.touchStart.touches[0].target
-                    && this.touchStart.touches[0].target.constructor.name !== "Window"
-                ) {
-                    this.touchStart.touches[0].target.dispatchEvent(longPressEvent);
-                }
-                window.dispatchEvent(longPressEvent);
             }
         }
 
@@ -119,13 +113,18 @@ interface GestureEventMap {
     "doubletap": DoubleTapEvent;
 }
 
+interface GestureEventProperties {
+    longPressDelay: number;
+    doubleTapDelay: number;
+}
+
 declare global {
     interface Window {
         gestureProvider: GestureProvider;
     }
-    interface WindowEventMap extends GestureEventMap {}
-    interface ElementEventMap extends GestureEventMap {}
-    interface HTMLElement extends GestureEventMap {}
+    interface WindowEventMap extends GestureEventMap, GestureEventProperties {}
+    interface ElementEventMap extends GestureEventMap, GestureEventProperties {}
+    interface HTMLElement extends GestureEventMap, GestureEventProperties {}
 }
 
 window.gestureProvider = new GestureProvider();

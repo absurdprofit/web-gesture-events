@@ -23,6 +23,7 @@ class GestureEvent extends TouchEvent {
             altKey: touchEvent.altKey,
             metaKey: touchEvent.metaKey
         });
+        this.gestureTarget = touchEvent.touches[0].target ? touchEvent.touches[0].target : window;
     }
 }
 exports.default = GestureEvent;

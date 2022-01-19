@@ -34,15 +34,19 @@ interface GestureEventMap {
     "longpress": LongPressEvent;
     "doubletap": DoubleTapEvent;
 }
+interface GestureEventProperties {
+    longPressDelay: number;
+    doubleTapDelay: number;
+}
 declare global {
     interface Window {
         gestureProvider: GestureProvider;
     }
-    interface WindowEventMap extends GestureEventMap {
+    interface WindowEventMap extends GestureEventMap, GestureEventProperties {
     }
-    interface ElementEventMap extends GestureEventMap {
+    interface ElementEventMap extends GestureEventMap, GestureEventProperties {
     }
-    interface HTMLElement extends GestureEventMap {
+    interface HTMLElement extends GestureEventMap, GestureEventProperties {
     }
 }
 export { TapEvent, GestureEvent, LongPressEvent, DoubleTapEvent };

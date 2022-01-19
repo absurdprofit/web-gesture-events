@@ -33,6 +33,7 @@ class GestureProvider {
         window.addEventListener('touchstart', this.touchStartListener, true);
     }
     bind() {
+        this.unbind();
         window.addEventListener('touchmove', this.touchMoveListener, true);
         window.addEventListener('touchend', this.touchEndListener, true);
         window.addEventListener('touchcancel', this.touchCancelListener, true);
@@ -59,36 +60,31 @@ class GestureProvider {
         this.touchEnd = touchEnd;
         this.touchEndTime = Date.now();
         const touchDuration = this.touchEndTime - this.touchStartTime;
-        if (!this.touchMoved) {
-            if (touchDuration < this.config.longPressDelay) {
-                if ((this.touchEndTime - this.lastTouchTime) < this.config.doubleTapDelay) {
-                    const doubleTapEvent = new DoubleTapEvent_1.default(this.touchStart);
-                    if (this.touchStart.touches[0]
-                        && this.touchStart.touches[0].target
-                        && this.touchStart.touches[0].target.constructor.name !== "Window") {
-                        this.touchStart.touches[0].target.dispatchEvent(doubleTapEvent);
+        if (this.touchStart.touches[0]
+            && this.touchStart.touches[0].target
+            && this.touchStart.touches[0].target.constructor.name !== "Window") {
+            const target = this.touchStart.touches[0].target;
+            const longPressDelay = parseFloat(target.getAttribute('longpressdelay') || '0') || this.config.longPressDelay;
+            const doubleTapDelay = parseFloat(target.getAttribute('doubletapdelay') || '0') || this.config.doubleTapDelay;
+            if (!this.touchMoved) {
+                if (touchDuration < longPressDelay) {
+                    if ((this.touchEndTime - this.lastTouchTime) < doubleTapDelay) {
+                        const doubleTapEvent = new DoubleTapEvent_1.default(this.touchStart);
+                        target.dispatchEvent(doubleTapEvent);
                         this.lastTouchTime = 0;
+                        window.dispatchEvent(doubleTapEvent);
                     }
-                    window.dispatchEvent(doubleTapEvent);
+                    else {
+                        const tapEvent = new TapEvent_1.default(this.touchStart, touchDuration);
+                        target.dispatchEvent(tapEvent);
+                        window.dispatchEvent(tapEvent);
+                    }
                 }
                 else {
-                    const tapEvent = new TapEvent_1.default(this.touchStart, touchDuration);
-                    if (this.touchStart.touches[0]
-                        && this.touchStart.touches[0].target
-                        && this.touchStart.touches[0].target.constructor.name !== "Window") {
-                        this.touchStart.touches[0].target.dispatchEvent(tapEvent);
-                    }
-                    window.dispatchEvent(tapEvent);
+                    const longPressEvent = new LongPressEvent_1.default(this.touchStart, touchDuration);
+                    target.dispatchEvent(longPressEvent);
+                    window.dispatchEvent(longPressEvent);
                 }
-            }
-            else {
-                const longPressEvent = new LongPressEvent_1.default(this.touchStart, touchDuration);
-                if (this.touchStart.touches[0]
-                    && this.touchStart.touches[0].target
-                    && this.touchStart.touches[0].target.constructor.name !== "Window") {
-                    this.touchStart.touches[0].target.dispatchEvent(longPressEvent);
-                }
-                window.dispatchEvent(longPressEvent);
             }
         }
         this.lastTouchTime = this.touchEndTime;

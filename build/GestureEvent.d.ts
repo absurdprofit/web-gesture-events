@@ -11,6 +11,7 @@ declare enum GestureEventTypeEnum {
 }
 declare type GestureEventType = keyof typeof GestureEventTypeEnum;
 export default abstract class GestureEvent extends TouchEvent {
+    readonly gestureTarget: EventTarget;
     constructor(type: GestureEventType, touchEvent: TouchEvent);
 }
 export {};
