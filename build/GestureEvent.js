@@ -9,9 +9,8 @@ var GestureEventTypeEnum;
     GestureEventTypeEnum[GestureEventTypeEnum["swipe"] = 4] = "swipe";
     GestureEventTypeEnum[GestureEventTypeEnum["fling"] = 5] = "fling";
     GestureEventTypeEnum[GestureEventTypeEnum["pan"] = 6] = "pan";
-    GestureEventTypeEnum[GestureEventTypeEnum["scroll"] = 7] = "scroll";
-    GestureEventTypeEnum[GestureEventTypeEnum["drag"] = 8] = "drag";
-    GestureEventTypeEnum[GestureEventTypeEnum["doubletap"] = 9] = "doubletap";
+    GestureEventTypeEnum[GestureEventTypeEnum["drag"] = 7] = "drag";
+    GestureEventTypeEnum[GestureEventTypeEnum["doubletap"] = 8] = "doubletap";
 })(GestureEventTypeEnum || (GestureEventTypeEnum = {}));
 class GestureEvent extends TouchEvent {
     constructor(type, touchEvent) {

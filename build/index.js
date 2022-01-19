@@ -3,13 +3,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.LongPressEvent = exports.GestureEvent = exports.TapEvent = void 0;
+exports.DoubleTapEvent = exports.LongPressEvent = exports.GestureEvent = exports.TapEvent = void 0;
 const GestureEvent_1 = __importDefault(require("./GestureEvent"));
 exports.GestureEvent = GestureEvent_1.default;
 const LongPressEvent_1 = __importDefault(require("./LongPressEvent"));
 exports.LongPressEvent = LongPressEvent_1.default;
 const TapEvent_1 = __importDefault(require("./TapEvent"));
 exports.TapEvent = TapEvent_1.default;
+const DoubleTapEvent_1 = __importDefault(require("./DoubleTapEvent"));
+exports.DoubleTapEvent = DoubleTapEvent_1.default;
 class GestureProvider {
     constructor() {
         this.touchStart = new TouchEvent('touchstart');
@@ -17,11 +19,17 @@ class GestureProvider {
         this.touchEnd = new TouchEvent('touchend');
         this.touchCancel = new TouchEvent('touchcancel');
         this.touchStartTime = 0;
+        this.touchEndTime = 0;
+        this.lastTouchTime = 0;
         this.touchMoved = false;
         this.touchStartListener = this.onTouchStart.bind(this);
         this.touchMoveListener = this.onTouchMove.bind(this);
         this.touchEndListener = this.onTouchEnd.bind(this);
         this.touchCancelListener = this.onTouchCancel.bind(this);
+        this.config = {
+            longPressDelay: 500,
+            doubleTapDelay: 150
+        };
         window.addEventListener('touchstart', this.touchStartListener, true);
     }
     bind() {
@@ -49,16 +57,29 @@ class GestureProvider {
     }
     onTouchEnd(touchEnd) {
         this.touchEnd = touchEnd;
-        const touchDuration = Date.now() - this.touchStartTime;
+        this.touchEndTime = Date.now();
+        const touchDuration = this.touchEndTime - this.touchStartTime;
         if (!this.touchMoved) {
-            if (touchDuration < 500) {
-                const tapEvent = new TapEvent_1.default(this.touchStart, touchDuration);
-                if (this.touchStart.touches[0]
-                    && this.touchStart.touches[0].target
-                    && this.touchStart.touches[0].target.constructor.name !== "Window") {
-                    this.touchStart.touches[0].target.dispatchEvent(tapEvent);
+            if (touchDuration < this.config.longPressDelay) {
+                if ((this.touchEndTime - this.lastTouchTime) < this.config.doubleTapDelay) {
+                    const doubleTapEvent = new DoubleTapEvent_1.default(this.touchStart);
+                    if (this.touchStart.touches[0]
+                        && this.touchStart.touches[0].target
+                        && this.touchStart.touches[0].target.constructor.name !== "Window") {
+                        this.touchStart.touches[0].target.dispatchEvent(doubleTapEvent);
+                        this.lastTouchTime = 0;
+                    }
+                    window.dispatchEvent(doubleTapEvent);
                 }
-                window.dispatchEvent(tapEvent);
+                else {
+                    const tapEvent = new TapEvent_1.default(this.touchStart, touchDuration);
+                    if (this.touchStart.touches[0]
+                        && this.touchStart.touches[0].target
+                        && this.touchStart.touches[0].target.constructor.name !== "Window") {
+                        this.touchStart.touches[0].target.dispatchEvent(tapEvent);
+                    }
+                    window.dispatchEvent(tapEvent);
+                }
             }
             else {
                 const longPressEvent = new LongPressEvent_1.default(this.touchStart, touchDuration);
@@ -70,6 +91,7 @@ class GestureProvider {
                 window.dispatchEvent(longPressEvent);
             }
         }
+        this.lastTouchTime = this.touchEndTime;
         this.clean();
         this.unbind();
     }

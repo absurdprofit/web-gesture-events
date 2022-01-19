@@ -6,7 +6,6 @@ enum GestureEventTypeEnum {
     swipe,
     fling,
     pan,
-    scroll,
     drag,
     doubletap
 }

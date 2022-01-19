@@ -6,9 +6,8 @@ declare enum GestureEventTypeEnum {
     swipe = 4,
     fling = 5,
     pan = 6,
-    scroll = 7,
-    drag = 8,
-    doubletap = 9
+    drag = 7,
+    doubletap = 8
 }
 declare type GestureEventType = keyof typeof GestureEventTypeEnum;
 export default abstract class GestureEvent extends TouchEvent {

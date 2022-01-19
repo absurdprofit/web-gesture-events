@@ -1,17 +1,25 @@
 import GestureEvent from "./GestureEvent";
 import LongPressEvent from "./LongPressEvent";
 import TapEvent from './TapEvent';
+import DoubleTapEvent from './DoubleTapEvent';
+interface GestureProviderConfig {
+    longPressDelay: number;
+    doubleTapDelay: number;
+}
 export default class GestureProvider {
     private touchStart;
     private touchMove;
     private touchEnd;
     private touchCancel;
     private touchStartTime;
+    private touchEndTime;
+    private lastTouchTime;
     private touchMoved;
     private touchStartListener;
     private touchMoveListener;
     private touchEndListener;
     private touchCancelListener;
+    config: GestureProviderConfig;
     constructor();
     bind(): void;
     unbind(): void;
@@ -24,6 +32,7 @@ export default class GestureProvider {
 interface GestureEventMap {
     "tap": TapEvent;
     "longpress": LongPressEvent;
+    "doubletap": DoubleTapEvent;
 }
 declare global {
     interface Window {
@@ -36,4 +45,4 @@ declare global {
     interface HTMLElement extends GestureEventMap {
     }
 }
-export { TapEvent, GestureEvent, LongPressEvent };
+export { TapEvent, GestureEvent, LongPressEvent, DoubleTapEvent };
