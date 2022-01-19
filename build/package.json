@@ -1,0 +1,23 @@
+{
+  "name": "web-gesture-events",
+  "version": "0.0.0",
+  "description": "This is a lightweight implementation of high level gestures for the web.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nxtexe/web-gesture-events.git"
+  },
+  "keywords": [
+    "TouchEvents",
+    "Gestures"
+  ],
+  "author": "nxte",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/nxtexe/web-gesture-events/issues"
+  },
+  "homepage": "https://github.com/nxtexe/web-gesture-events#readme"
+}

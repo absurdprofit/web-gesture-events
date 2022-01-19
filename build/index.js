@@ -3,9 +3,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GestureEvent = exports.TapEvent = void 0;
+exports.LongPressEvent = exports.GestureEvent = exports.TapEvent = void 0;
 const GestureEvent_1 = __importDefault(require("./GestureEvent"));
 exports.GestureEvent = GestureEvent_1.default;
+const LongPressEvent_1 = __importDefault(require("./LongPressEvent"));
+exports.LongPressEvent = LongPressEvent_1.default;
 const TapEvent_1 = __importDefault(require("./TapEvent"));
 exports.TapEvent = TapEvent_1.default;
 class GestureProvider {
@@ -16,32 +18,67 @@ class GestureProvider {
         this.touchCancel = new TouchEvent('touchcancel');
         this.touchStartTime = 0;
         this.touchMoved = false;
-        window.addEventListener('touchstart', this.onTouchStart, true);
+        this.touchStartListener = this.onTouchStart.bind(this);
+        this.touchMoveListener = this.onTouchMove.bind(this);
+        this.touchEndListener = this.onTouchEnd.bind(this);
+        this.touchCancelListener = this.onTouchCancel.bind(this);
+        window.addEventListener('touchstart', this.touchStartListener, true);
+    }
+    bind() {
+        window.addEventListener('touchmove', this.touchMoveListener, true);
+        window.addEventListener('touchend', this.touchEndListener, true);
+        window.addEventListener('touchcancel', this.touchCancelListener, true);
+    }
+    unbind() {
+        window.removeEventListener('touchmove', this.touchMoveListener);
+        window.removeEventListener('touchend', this.touchEndListener);
+        window.removeEventListener('touchcancel', this.touchCancelListener);
+    }
+    clean() {
+        this.touchMoved = false;
+        this.touchStartTime = 0;
     }
     onTouchStart(touchStart) {
         this.touchStart = touchStart;
         this.touchStartTime = Date.now();
+        this.bind();
     }
     onTouchMove(touchMove) {
-        this.touchMoved = false;
+        this.touchMoved = true;
         this.touchMove = touchMove;
     }
     onTouchEnd(touchEnd) {
         this.touchEnd = touchEnd;
         const touchDuration = Date.now() - this.touchStartTime;
-        const tapEvent = new TapEvent_1.default(this.touchStart, touchDuration);
         if (!this.touchMoved) {
-            if (this.touchStart.target && this.touchStart.target !== window) {
-                this.touchStart.target.dispatchEvent(tapEvent);
+            if (touchDuration < 500) {
+                const tapEvent = new TapEvent_1.default(this.touchStart, touchDuration);
+                if (this.touchStart.touches[0]
+                    && this.touchStart.touches[0].target
+                    && this.touchStart.touches[0].target.constructor.name !== "Window") {
+                    this.touchStart.touches[0].target.dispatchEvent(tapEvent);
+                }
+                window.dispatchEvent(tapEvent);
             }
-            window.dispatchEvent(tapEvent);
-            return;
+            else {
+                const longPressEvent = new LongPressEvent_1.default(this.touchStart, touchDuration);
+                if (this.touchStart.touches[0]
+                    && this.touchStart.touches[0].target
+                    && this.touchStart.touches[0].target.constructor.name !== "Window") {
+                    this.touchStart.touches[0].target.dispatchEvent(longPressEvent);
+                }
+                window.dispatchEvent(longPressEvent);
+            }
         }
-        this.touchMoved = false;
-        this.touchStartTime = 0;
+        this.clean();
+        this.unbind();
     }
     onTouchCancel(touchCancel) {
         this.touchCancel = touchCancel;
+        this.clean();
+        this.unbind();
     }
 }
+exports.default = GestureProvider;
+window.gestureProvider = new GestureProvider();
 //# sourceMappingURL=index.js.map
