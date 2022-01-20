@@ -2,9 +2,12 @@ import GestureEvent from "./GestureEvent";
 import LongPressEvent from "./LongPressEvent";
 import TapEvent from './TapEvent';
 import DoubleTapEvent from './DoubleTapEvent';
+import SwipeEvent from "./SwipeEvent";
 interface GestureProviderConfig {
     longPressDelay: number;
     doubleTapDelay: number;
+    minPointers: number;
+    numberOfTaps: number;
 }
 export default class GestureProvider {
     private touchStart;
@@ -15,14 +18,18 @@ export default class GestureProvider {
     private touchEndTime;
     private lastTouchTime;
     private touchMoved;
+    private touchDown;
+    private shouldFire;
+    private pointers;
     private touchStartListener;
     private touchMoveListener;
     private touchEndListener;
     private touchCancelListener;
+    private currentTarget;
     config: GestureProviderConfig;
     constructor();
-    bind(): void;
-    unbind(): void;
+    bind(target: Window | EventTarget): void;
+    unbind(target: Window | EventTarget): void;
     clean(): void;
     onTouchStart(touchStart: TouchEvent): void;
     onTouchMove(touchMove: TouchEvent): void;
@@ -33,6 +40,7 @@ interface GestureEventMap {
     "tap": TapEvent;
     "longpress": LongPressEvent;
     "doubletap": DoubleTapEvent;
+    "swipe": SwipeEvent;
 }
 interface GestureEventProperties {
     longPressDelay: number;
@@ -48,5 +56,9 @@ declare global {
     }
     interface HTMLElement extends GestureEventMap, GestureEventProperties {
     }
+    interface EventTarget extends GestureEventMap {
+        addEventListener<K extends keyof WindowEventMap>(type: K, listener: (this: Window, ev: WindowEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof WindowEventMap>(type: K, listener: (this: Window, ev: WindowEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+    }
 }
-export { TapEvent, GestureEvent, LongPressEvent, DoubleTapEvent };
+export { TapEvent, GestureEvent, LongPressEvent, DoubleTapEvent, SwipeEvent };

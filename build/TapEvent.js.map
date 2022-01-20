@@ -1,1 +1,1 @@
-{"version":3,"file":"TapEvent.js","sourceRoot":"","sources":["../src/TapEvent.ts"],"names":[],"mappings":";;;;;AAAA,kEAA0C;AAE1C,MAAqB,QAAS,SAAQ,sBAAY;IAE9C,YAAY,UAAsB,EAAE,QAAgB;QAChD,KAAK,CAAC,KAAK,EAAE,UAAU,CAAC,CAAC;QAFrB,aAAQ,GAAW,CAAC,CAAC;QAGzB,IAAI,CAAC,QAAQ,GAAG,QAAQ,CAAC;IAC7B,CAAC;CACJ;AAND,2BAMC"}
+{"version":3,"file":"TapEvent.js","sourceRoot":"","sources":["../src/TapEvent.ts"],"names":[],"mappings":";;;;;AAAA,kEAA0C;AAE1C,MAAqB,QAAS,SAAQ,sBAAY;IAE9C,YAAY,UAAsB;QAC9B,KAAK,CAAC,KAAK,EAAE,UAAU,CAAC,CAAC;QAFrB,aAAQ,GAAW,CAAC,CAAC;IAG7B,CAAC;CACJ;AALD,2BAKC"}
