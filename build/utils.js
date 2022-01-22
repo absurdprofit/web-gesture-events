@@ -11,10 +11,18 @@ class Vec2 {
     constructor(_x, _y) {
         this._x = 0;
         this._y = 0;
-        const x = _x - window.innerWidth / 2;
-        const y = _y - window.innerHeight / 2;
-        this._x = x;
-        this._y = y;
+        this._clientX = 0;
+        this._clientY = 0;
+        this._clientX = _x;
+        this._clientY = _y;
+        this._x = this.translateX(_x);
+        this._y = this.translateY(_y);
+    }
+    translateY(_y) {
+        return _y - window.innerHeight / 2;
+    }
+    translateX(_x) {
+        return _x - window.innerWidth / 2;
     }
     get x() {
         return this._x;
@@ -22,11 +30,19 @@ class Vec2 {
     get y() {
         return this._y;
     }
+    get clientX() {
+        return this._clientX;
+    }
+    get clientY() {
+        return this._clientY;
+    }
     set x(_x) {
-        this._x = _x;
+        this._clientX = _x;
+        this._x = this.translateX(_x);
     }
     set y(_y) {
-        this._y = _y;
+        this._clientY = _y;
+        this._y = this.translateY(_y);
     }
     add(vector) {
         this._x += vector.x;
@@ -44,6 +60,9 @@ class Vec2 {
     }
     get magnitude() {
         return Math.sqrt(Math.pow(this._x, 2) + Math.pow(this._y, 2));
+    }
+    get clientMagnitude() {
+        return Math.sqrt(Math.pow(this._clientX, 2) + Math.pow(this._clientY, 2));
     }
 }
 exports.Vec2 = Vec2;

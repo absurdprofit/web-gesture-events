@@ -1,0 +1,1 @@
+{"version":3,"file":"PinchEvent.js","sourceRoot":"","sources":["../src/PinchEvent.ts"],"names":[],"mappings":";;;;;AAAA,kEAA0C;AAM1C,MAAqB,UAAW,SAAQ,sBAAY;IAEhD,YAAY,UAAsB,EAAE,SAAoB;QACpD,KAAK,CAAC,OAAO,EAAE,UAAU,CAAC,CAAC;QAC3B,IAAI,CAAC,KAAK,GAAG,SAAS,CAAC,KAAK,CAAC;IACjC,CAAC;CACJ;AAND,6BAMC"}
