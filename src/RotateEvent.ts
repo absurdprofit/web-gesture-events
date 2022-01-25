@@ -1,21 +1,35 @@
 import GestureEvent from "./GestureEvent";
 import { Vec2 } from "./utils";
 
+interface Anchor {
+    x: number;
+    y: number;
+    clientX: number;
+    clientY: number;
+}
 interface RotationData {
-    anchor: Vec2;
+    anchor: Anchor;
     rotation: number;
     rotationDeg: number;
 }
 
 export default class RotateEvent extends GestureEvent {
-    readonly anchor: Vec2;
-    readonly rotation: number;
+    readonly anchor: Anchor;
+    declare readonly rotation: number; // already exists only in iOS as readonly. This avoids TypeError. 
     readonly rotationDeg: number;
 
     constructor(touchEvent: TouchEvent, rotationData: RotationData) {
         super('rotate', touchEvent);
-        this.anchor = rotationData.anchor;
-        this.rotation = rotationData.rotation;
+        this.anchor = {
+            x: rotationData.anchor.x,
+            y: rotationData.anchor.y,
+            clientX: rotationData.anchor.clientX,
+            clientY: rotationData.anchor.clientY
+        };
+        Object.defineProperty(this, 'rotation', {
+            value: rotationData.rotation,
+            writable: false
+        });
         this.rotationDeg = rotationData.rotationDeg;
     }
 }

@@ -13,6 +13,7 @@ interface GestureProviderConfig {
     numberOfTaps: number;
 }
 export default class GestureProvider {
+    private static listening;
     private touchStart;
     private touchMove;
     private touchEnd;
@@ -27,8 +28,6 @@ export default class GestureProvider {
     private shouldFire;
     private doubleTap;
     private pointers;
-    private lastDirection;
-    private isPanning;
     private isLongPress;
     private touchStartListener;
     private touchMoveListener;
@@ -41,6 +40,7 @@ export default class GestureProvider {
     unbind(target: Window | EventTarget): void;
     clean(): void;
     onPointerLeave(): void;
+    dispatchEvent(gestureEvent: GestureEvent): void;
     onTouchStart(touchStart: TouchEvent): void;
     onTouchMove(touchMove: TouchEvent): void;
     onTouchEnd(touchEnd: TouchEvent): void;

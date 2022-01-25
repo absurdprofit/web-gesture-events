@@ -7,8 +7,16 @@ const GestureEvent_1 = __importDefault(require("./GestureEvent"));
 class RotateEvent extends GestureEvent_1.default {
     constructor(touchEvent, rotationData) {
         super('rotate', touchEvent);
-        this.anchor = rotationData.anchor;
-        this.rotation = rotationData.rotation;
+        this.anchor = {
+            x: rotationData.anchor.x,
+            y: rotationData.anchor.y,
+            clientX: rotationData.anchor.clientX,
+            clientY: rotationData.anchor.clientY
+        };
+        Object.defineProperty(this, 'rotation', {
+            value: rotationData.rotation,
+            writable: false
+        });
         this.rotationDeg = rotationData.rotationDeg;
     }
 }

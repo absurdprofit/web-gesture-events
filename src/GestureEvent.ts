@@ -28,5 +28,6 @@ export default abstract class GestureEvent extends TouchEvent {
         this.gestureTarget = touchEvent.touches[0].target ? touchEvent.touches[0].target : window;
         this.x = touchEvent.touches[0].clientX;
         this.y = touchEvent.touches[0].clientY;
+        
     }
 }

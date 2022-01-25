@@ -18,7 +18,7 @@ export class Vec2 {
     }
 
     private translateY(_y: number) {
-        return _y - window.innerHeight / 2;
+        return -(_y - window.innerHeight / 2);
         
     }
 
@@ -55,14 +55,16 @@ export class Vec2 {
     add(vector: Vec2) {
         this._x += vector.x;
         this._y += vector.y;
-        
+        this._clientX += vector.clientX;
+        this._clientY += vector.clientY;
         return this;
     }
 
     substract(vector: Vec2) {
         this._x -= vector.x;
         this._y -= vector.y;
-
+        this._clientX -= vector.clientX;
+        this._clientY -= vector.clientY;
         return this;
     }
 

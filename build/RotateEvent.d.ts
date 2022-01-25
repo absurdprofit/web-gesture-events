@@ -1,12 +1,17 @@
 import GestureEvent from "./GestureEvent";
-import { Vec2 } from "./utils";
+interface Anchor {
+    x: number;
+    y: number;
+    clientX: number;
+    clientY: number;
+}
 interface RotationData {
-    anchor: Vec2;
+    anchor: Anchor;
     rotation: number;
     rotationDeg: number;
 }
 export default class RotateEvent extends GestureEvent {
-    readonly anchor: Vec2;
+    readonly anchor: Anchor;
     readonly rotation: number;
     readonly rotationDeg: number;
     constructor(touchEvent: TouchEvent, rotationData: RotationData);

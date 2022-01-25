@@ -7,7 +7,10 @@ const GestureEvent_1 = __importDefault(require("./GestureEvent"));
 class PinchEvent extends GestureEvent_1.default {
     constructor(touchEvent, pinchData) {
         super('pinch', touchEvent);
-        this.scale = pinchData.scale;
+        Object.defineProperty(this, 'scale', {
+            value: pinchData.scale,
+            writable: false
+        });
     }
 }
 exports.default = PinchEvent;

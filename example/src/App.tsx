@@ -10,6 +10,7 @@ interface AppState {
   rotation: number;
   translateX: number;
   translateY: number;
+  touchPointers: number;
 }
 class App extends React.Component<{}, AppState> {
   private ref: HTMLElement | null = null;
@@ -26,7 +27,12 @@ class App extends React.Component<{}, AppState> {
     scale: 1,
     rotation: 0,
     translateX: 0,
-    translateY: 0
+    translateY: 0,
+    touchPointers: 0
+  }
+
+  componentDidUpdate() {
+    // console.log(JSON.stringify(this.state));
   }
 
   componentDidMount() {
@@ -53,7 +59,7 @@ class App extends React.Component<{}, AppState> {
   }
 
   onTap(ev: TapEvent) {
-    this.setState({eventType: ev.type, scale: ev.touches.length});
+    this.setState({eventType: ev.type, touchPointers: ev.touches.length});
   }
 
   onLongPress(ev: LongPressEvent) {
@@ -69,7 +75,7 @@ class App extends React.Component<{}, AppState> {
   }
 
   onPan(ev: PanEvent) {
-    this.setState({eventType: ev.type, translateX: ev.translation.x, translateY: ev.translation.y});
+    this.setState({eventType: ev.type, translateX: ev.translation.clientX, translateY: ev.translation.clientY});
   }
 
   onPinch(ev: PinchEvent) {
@@ -91,17 +97,21 @@ class App extends React.Component<{}, AppState> {
   render() {
     return (
       <div className="App">
-        <header style={{transform: `translate(${this.state.translateX}px, ${this.state.translateY}px) scale(${this.state.scale}) rotate(${this.state.rotation}deg)`}} className="App-header" ref={(ref) => {
+        <header className="App-header" style={{transform: `translate(${this.state.translateX}px, ${this.state.translateY}px) scale(${this.state.scale}) rotate(${this.state.rotation}deg)`}} ref={(ref) => {
           this.ref = ref;
         }} {...{"data-gesturetarget": true}}>
+          <p>Max Touch Points: {navigator.maxTouchPoints}</p>
           <img src={logo} className="App-logo" alt="logo" />
           <p {...{longpressdelay: 600}}>
             {this.state.eventType.length ? this.state.eventType + '!' : ''}
           </p>
           <p>
-            {this.state.eventType === 'pinch' ? 'Scale: ' + this.state.scale : ''}
-            {this.state.eventType === 'rotate' ? 'Rotation: ' + this.state.rotation + '°' : ''}
+            {this.state.scale ? 'Scale: ' + this.state.scale : ''}
           </p>
+          <p>
+            {this.state.rotation + '°'}
+          </p>
+          <p>Pointers: {this.state.touchPointers}</p>
         </header>
       </div>
     );
