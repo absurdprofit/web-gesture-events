@@ -2,11 +2,14 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import 'web-gesture-events';
-import {TapEvent, LongPressEvent, DoubleTapEvent, SwipeEvent, PanEvent, PinchEvent} from 'web-gesture-events';
+import {TapEvent, LongPressEvent, DoubleTapEvent, SwipeEvent, PanEvent, PinchEvent, RotateEvent} from 'web-gesture-events';
 
 interface AppState {
   eventType: string;
   scale: number;
+  rotation: number;
+  translateX: number;
+  translateY: number;
 }
 class App extends React.Component<{}, AppState> {
   private ref: HTMLElement | null = null;
@@ -16,10 +19,14 @@ class App extends React.Component<{}, AppState> {
   private onSwipeListener = this.onSwipe.bind(this);
   private onPanListener = this.onPan.bind(this);
   private onPinchListener = this.onPinch.bind(this);
+  private onRotateListener = this.onRotate.bind(this);
   private onContextMenuListener = this.onContextMenu.bind(this);
   state: AppState = {
     eventType: '',
-    scale: 0
+    scale: 1,
+    rotation: 0,
+    translateX: 0,
+    translateY: 0
   }
 
   componentDidMount() {
@@ -29,7 +36,8 @@ class App extends React.Component<{}, AppState> {
     window.addEventListener('doubletap', this.onDoubleTapListener);
     window.addEventListener('swipe', this.onSwipeListener);
     window.addEventListener('pan', this.onPanListener);
-    window.addEventListener('pinch', this.onPinchListener);
+    window.addEventListener('pinch', this.onPinchListener); 
+    window.addEventListener('rotate', this.onRotateListener);
     window.addEventListener('contextmenu', this.onContextMenuListener);
   }
 
@@ -40,6 +48,7 @@ class App extends React.Component<{}, AppState> {
     window.removeEventListener('swipe', this.onSwipeListener);
     window.removeEventListener('pan', this.onPanListener);
     window.removeEventListener('pinch', this.onPinchListener);
+    window.removeEventListener('rotate', this.onRotateListener);
     window.removeEventListener('contextmenu', this.onContextMenuListener);
   }
 
@@ -60,14 +69,18 @@ class App extends React.Component<{}, AppState> {
   }
 
   onPan(ev: PanEvent) {
-    this.setState({eventType: ev.type});
+    this.setState({eventType: ev.type, translateX: ev.translation.x, translateY: ev.translation.y});
   }
 
   onPinch(ev: PinchEvent) {
-    this.setState({eventType: ev.type, scale: ev.scale});
+    this.setState({scale: ev.scale});
     // if (this.ref) {
     //   this.ref.style.transform = `scale(${this.state.scale})`;
     // }
+  }
+
+  onRotate(ev: RotateEvent) {
+    this.setState({rotation: ev.rotationDeg});
   }
 
   onContextMenu(ev: Event) {
@@ -78,15 +91,16 @@ class App extends React.Component<{}, AppState> {
   render() {
     return (
       <div className="App">
-        <header className="App-header" ref={(ref) => {
+        <header style={{transform: `translate(${this.state.translateX}px, ${this.state.translateY}px) scale(${this.state.scale}) rotate(${this.state.rotation}deg)`}} className="App-header" ref={(ref) => {
           this.ref = ref;
-        }}>
+        }} {...{"data-gesturetarget": true}}>
           <img src={logo} className="App-logo" alt="logo" />
           <p {...{longpressdelay: 600}}>
             {this.state.eventType.length ? this.state.eventType + '!' : ''}
           </p>
           <p>
-            {this.state.scale ? 'Scale: ' + this.state.scale : ''}
+            {this.state.eventType === 'pinch' ? 'Scale: ' + this.state.scale : ''}
+            {this.state.eventType === 'rotate' ? 'Rotation: ' + this.state.rotation + '°' : ''}
           </p>
         </header>
       </div>

@@ -16,7 +16,8 @@ code {
   overscroll-behavior: none;
 }
 html,
-body {
+body,
+header {
   position: fixed;
   overflow: hidden;
   left: 0;

@@ -5,6 +5,7 @@ import DoubleTapEvent from './DoubleTapEvent';
 import SwipeEvent from "./SwipeEvent";
 import PanEvent from "./PanEvent";
 import PinchEvent from "./PinchEvent";
+import RotateEvent from "./RotateEvent";
 interface GestureProviderConfig {
     longPressDelay: number;
     doubleTapDelay: number;
@@ -24,6 +25,7 @@ export default class GestureProvider {
     private touchMoved;
     private touchDown;
     private shouldFire;
+    private doubleTap;
     private pointers;
     private lastDirection;
     private isPanning;
@@ -38,6 +40,7 @@ export default class GestureProvider {
     bind(target: Window | EventTarget): void;
     unbind(target: Window | EventTarget): void;
     clean(): void;
+    onPointerLeave(): void;
     onTouchStart(touchStart: TouchEvent): void;
     onTouchMove(touchMove: TouchEvent): void;
     onTouchEnd(touchEnd: TouchEvent): void;
@@ -50,6 +53,7 @@ interface GestureEventMap {
     "swipe": SwipeEvent;
     "pan": PanEvent;
     "pinch": PinchEvent;
+    "rotate": RotateEvent;
 }
 declare global {
     interface Window {
@@ -66,4 +70,4 @@ declare global {
         removeEventListener<K extends keyof WindowEventMap>(type: K, listener: (this: Window, ev: WindowEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
     }
 }
-export { TapEvent, GestureEvent, LongPressEvent, DoubleTapEvent, SwipeEvent, PanEvent, PinchEvent };
+export { TapEvent, GestureEvent, LongPressEvent, DoubleTapEvent, SwipeEvent, PanEvent, PinchEvent, RotateEvent };
