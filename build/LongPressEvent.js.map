@@ -1,1 +1,0 @@
-{"version":3,"file":"LongPressEvent.js","sourceRoot":"","sources":["../src/LongPressEvent.ts"],"names":[],"mappings":";;;;;AAAA,kEAA0C;AAE1C,MAAqB,cAAe,SAAQ,sBAAY;IAEpD,YAAY,UAAsB,EAAE,QAAgB;QAChD,KAAK,CAAC,WAAW,EAAE,UAAU,CAAC,CAAC;QAF3B,aAAQ,GAAW,CAAC,CAAC;QAGzB,IAAI,CAAC,QAAQ,GAAG,QAAQ,CAAC;IAC7B,CAAC;CACJ;AAND,iCAMC"}
