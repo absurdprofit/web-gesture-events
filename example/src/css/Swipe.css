@@ -1,0 +1,28 @@
+.swipe-demo {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+.swipe-demo .swipe-area {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+}
+.swipe-demo .swipe-data {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+}
+.swipe-demo .swipe-data > * {
+    grid-area: 1/1;
+}
+.swipe-demo canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+}

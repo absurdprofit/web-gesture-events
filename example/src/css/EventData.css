@@ -1,0 +1,21 @@
+.event-data {
+    background-color: rgba(0, 0, 0, 0.9);
+    color: white;
+    width: fit-content;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    box-shadow: 0px 1px 5px black;
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+    position: static;
+    z-index: 100;
+}
+.event-data .event-datum {
+    display: flex;
+    gap: 5px;
+}
+.event-data .title {
+    margin-bottom: 5px;
+}

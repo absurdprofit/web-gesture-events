@@ -1,0 +1,43 @@
+.tap-demo {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+.tap-demo .content {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 15px;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+.tap-demo .card {
+    width: 150px;
+    height: 150px;
+    border-radius: 15px;
+    position: static;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0.5;
+    padding: 15px;
+    text-align: center;
+}
+.tap-demo .card.tap {
+    background-color: purple;
+    color: white;
+}
+.tap-demo .card.doubletap {
+    background-color: blueviolet;
+    color: white;
+}
+.tap-demo .card.tripletap {
+    background-color: pink;
+    color: black;
+}
+.tap-demo .card.longpress {
+    background-color: #89CFF0;
+    color: black;
+}

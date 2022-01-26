@@ -1,0 +1,12 @@
+.home {
+  background-color: #efefef;
+  flex: 1;
+}
+.home .list {
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+}
+.home .list button {
+  padding: 0;
+}
