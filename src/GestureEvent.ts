@@ -1,10 +1,18 @@
 enum GestureEventTypeEnum {
     tap,
     longpress,
+    pinchstart,
     pinch,
+    pinchend,
+    rotatestart,
     rotate,
+    rotateend,
+    swipestart,
     swipe,
+    swipeend,
+    panstart,
     pan,
+    panend,
     doubletap
 }
 
@@ -25,7 +33,13 @@ export default abstract class GestureEvent extends TouchEvent {
             altKey: touchEvent.altKey,
             metaKey: touchEvent.metaKey
         });
-        this.gestureTarget = touchEvent.touches[0].target ? touchEvent.touches[0].target : window;
+        if (type.includes("end")) {
+            this.gestureTarget = touchEvent.changedTouches[0].target;
+            this.x = touchEvent.changedTouches[0].clientX;
+            this.y = touchEvent.changedTouches[0].clientY;
+            return;
+        }
+        this.gestureTarget = touchEvent.touches[0].target;
         this.x = touchEvent.touches[0].clientX;
         this.y = touchEvent.touches[0].clientY;
         

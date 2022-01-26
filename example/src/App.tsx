@@ -2,7 +2,7 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import 'web-gesture-events';
-import {TapEvent, LongPressEvent, DoubleTapEvent, SwipeEvent, PanEvent, PinchEvent, RotateEvent} from 'web-gesture-events';
+import {TapEvent, LongPressEvent, DoubleTapEvent, SwipeEvent, PanEvent, PinchEvent, RotateEvent, GestureEvent} from 'web-gesture-events';
 
 interface AppState {
   eventType: string;
@@ -21,6 +21,7 @@ class App extends React.Component<{}, AppState> {
   private onPanListener = this.onPan.bind(this);
   private onPinchListener = this.onPinch.bind(this);
   private onRotateListener = this.onRotate.bind(this);
+  private onGestureLifecycleListener = this.onGestureLifecycle.bind(this);
   private onContextMenuListener = this.onContextMenu.bind(this);
   state: AppState = {
     eventType: '',
@@ -40,10 +41,18 @@ class App extends React.Component<{}, AppState> {
     window.addEventListener('tap', this.onTapListener);
     window.addEventListener('longpress', this.onLongPressListener);
     window.addEventListener('doubletap', this.onDoubleTapListener);
+    window.addEventListener('swipestart', this.onGestureLifecycleListener);
     window.addEventListener('swipe', this.onSwipeListener);
+    window.addEventListener('swipeend', this.onGestureLifecycleListener);
+    window.addEventListener('panstart', this.onGestureLifecycleListener);
     window.addEventListener('pan', this.onPanListener);
+    window.addEventListener('panend', this.onGestureLifecycleListener);
+    window.addEventListener('pinchstart', this.onGestureLifecycleListener);
     window.addEventListener('pinch', this.onPinchListener); 
+    window.addEventListener('pinchend', this.onGestureLifecycleListener);
+    window.addEventListener('rotatestart', this.onGestureLifecycleListener);
     window.addEventListener('rotate', this.onRotateListener);
+    window.addEventListener('rotateend', this.onGestureLifecycleListener);
     window.addEventListener('contextmenu', this.onContextMenuListener);
   }
 
@@ -51,10 +60,18 @@ class App extends React.Component<{}, AppState> {
     window.removeEventListener('tap', this.onTapListener);
     window.removeEventListener('longpress', this.onLongPressListener);
     window.removeEventListener('doubletap', this.onDoubleTapListener);
+    window.removeEventListener('swipestart', this.onGestureLifecycleListener);
     window.removeEventListener('swipe', this.onSwipeListener);
+    window.removeEventListener('swipeend', this.onGestureLifecycleListener);
+    window.removeEventListener('panstart', this.onGestureLifecycleListener);
     window.removeEventListener('pan', this.onPanListener);
+    window.removeEventListener('panend', this.onGestureLifecycleListener);
+    window.removeEventListener('pinchstart', this.onGestureLifecycleListener);
     window.removeEventListener('pinch', this.onPinchListener);
+    window.removeEventListener('pinchend', this.onGestureLifecycleListener);
+    window.removeEventListener('rotatestart', this.onGestureLifecycleListener);
     window.removeEventListener('rotate', this.onRotateListener);
+    window.removeEventListener('rotateend', this.onGestureLifecycleListener);
     window.removeEventListener('contextmenu', this.onContextMenuListener);
   }
 
@@ -68,6 +85,10 @@ class App extends React.Component<{}, AppState> {
 
   onDoubleTap(ev: DoubleTapEvent) {
     this.setState({eventType: ev.type});
+  }
+
+  onGestureLifecycle(ev: GestureEvent) {
+    console.log(ev.type);
   }
 
   onSwipe(ev: SwipeEvent) {

@@ -1,9 +1,28 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RotateEvent = exports.PinchEvent = exports.PanEvent = exports.SwipeEvent = exports.DoubleTapEvent = exports.LongPressEvent = exports.GestureEvent = exports.TapEvent = void 0;
+exports.RotateEndEvent = exports.RotateEvent = exports.RotateStartEvent = exports.PinchEndEvent = exports.PinchEvent = exports.PinchStartEvent = exports.PanEndEvent = exports.PanEvent = exports.PanStartEvent = exports.SwipeEndEvent = exports.SwipeEvent = exports.SwipeStartEvent = exports.DoubleTapEvent = exports.LongPressEvent = exports.GestureEvent = exports.TapEvent = void 0;
 const GestureEvent_1 = __importDefault(require("./GestureEvent"));
 exports.GestureEvent = GestureEvent_1.default;
 const LongPressEvent_1 = __importDefault(require("./LongPressEvent"));
@@ -12,14 +31,22 @@ const TapEvent_1 = __importDefault(require("./TapEvent"));
 exports.TapEvent = TapEvent_1.default;
 const DoubleTapEvent_1 = __importDefault(require("./DoubleTapEvent"));
 exports.DoubleTapEvent = DoubleTapEvent_1.default;
-const SwipeEvent_1 = __importDefault(require("./SwipeEvent"));
+const SwipeEvent_1 = __importStar(require("./SwipeEvent"));
 exports.SwipeEvent = SwipeEvent_1.default;
-const PanEvent_1 = __importDefault(require("./PanEvent"));
+Object.defineProperty(exports, "SwipeEndEvent", { enumerable: true, get: function () { return SwipeEvent_1.SwipeEndEvent; } });
+Object.defineProperty(exports, "SwipeStartEvent", { enumerable: true, get: function () { return SwipeEvent_1.SwipeStartEvent; } });
+const PanEvent_1 = __importStar(require("./PanEvent"));
 exports.PanEvent = PanEvent_1.default;
-const PinchEvent_1 = __importDefault(require("./PinchEvent"));
+Object.defineProperty(exports, "PanEndEvent", { enumerable: true, get: function () { return PanEvent_1.PanEndEvent; } });
+Object.defineProperty(exports, "PanStartEvent", { enumerable: true, get: function () { return PanEvent_1.PanStartEvent; } });
+const PinchEvent_1 = __importStar(require("./PinchEvent"));
 exports.PinchEvent = PinchEvent_1.default;
-const RotateEvent_1 = __importDefault(require("./RotateEvent"));
+Object.defineProperty(exports, "PinchEndEvent", { enumerable: true, get: function () { return PinchEvent_1.PinchEndEvent; } });
+Object.defineProperty(exports, "PinchStartEvent", { enumerable: true, get: function () { return PinchEvent_1.PinchStartEvent; } });
+const RotateEvent_1 = __importStar(require("./RotateEvent"));
 exports.RotateEvent = RotateEvent_1.default;
+Object.defineProperty(exports, "RotateEndEvent", { enumerable: true, get: function () { return RotateEvent_1.RotateEndEvent; } });
+Object.defineProperty(exports, "RotateStartEvent", { enumerable: true, get: function () { return RotateEvent_1.RotateStartEvent; } });
 const utils_1 = require("./utils");
 var CartesianDirectionEnum;
 (function (CartesianDirectionEnum) {
@@ -34,6 +61,17 @@ class GestureProvider {
         this.touchMove = new TouchEvent('touchmove');
         this.touchEnd = new TouchEvent('touchend');
         this.touchCancel = new TouchEvent('touchcancel');
+        this.velocity = 0;
+        this.dxDy = new utils_1.Vec2(0, 0);
+        this.scale = 1;
+        this.rotation = 0;
+        this.rotationDeg = 0;
+        this.anchor = new utils_1.Vec2(0, 0);
+        this.octant = 0;
+        this.isPanning = false;
+        this.isPinching = false;
+        this.isSwiping = false;
+        this.isRotating = false;
         this.touchStartTime = 0;
         this.touchEndTime = 0;
         this.lastTouchTime = 0;
@@ -45,6 +83,7 @@ class GestureProvider {
         this.doubleTap = false;
         this.pointers = 0;
         this.isLongPress = false;
+        this.longPressTimeout = 0;
         this.touchStartListener = this.onTouchStart.bind(this);
         this.touchMoveListener = this.onTouchMove.bind(this);
         this.touchEndListener = this.onTouchEnd.bind(this);
@@ -77,12 +116,51 @@ class GestureProvider {
         this.touchMoved = false;
         this.touchStartTime = 0;
         this.touchDown = false;
-        this.isLongPress = false;
         this.scaleBase = 0;
+        if (this.longPressTimeout && !this.isLongPress) {
+            clearTimeout(this.longPressTimeout);
+            this.longPressTimeout = 0;
+        }
+        this.isLongPress = false;
     }
-    onPointerLeave() {
-        if (this.touchEnd.touches.length === 1)
+    onPointerLeave(touchEnd) {
+        if (!touchEnd.touches.length) {
+            if (this.isSwiping) {
+                const swipeEndEvent = new SwipeEvent_1.SwipeEndEvent(touchEnd, {
+                    velocity: this.velocity,
+                    direction: CartesianDirectionEnum[(0, utils_1.closest)(this.octant, [0, 1, 2, 3])]
+                });
+                this.dispatchEvent(swipeEndEvent);
+                this.isSwiping = false;
+            }
+            if (this.isPanning) {
+                const panEndEvent = new PanEvent_1.PanEndEvent(touchEnd, {
+                    translation: this.dxDy,
+                    velocity: this.velocity
+                });
+                this.dispatchEvent(panEndEvent);
+                this.isPanning = false;
+            }
+        }
+        if (touchEnd.touches.length === 1) {
             this.scaleBase = 0;
+            if (this.isPinching) {
+                const pinchEndEvent = new PinchEvent_1.PinchEndEvent(touchEnd, {
+                    scale: this.scale
+                });
+                this.dispatchEvent(pinchEndEvent);
+                this.isPinching = false;
+            }
+            if (this.isRotating) {
+                const rotateEndEvent = new RotateEvent_1.RotateEndEvent(touchEnd, {
+                    rotation: this.rotation,
+                    rotationDeg: this.rotationDeg,
+                    anchor: this.anchor
+                });
+                this.dispatchEvent(rotateEndEvent);
+                this.isRotating = false;
+            }
+        }
     }
     dispatchEvent(gestureEvent) {
         queueMicrotask(() => {
@@ -107,14 +185,17 @@ class GestureProvider {
             this.bind(touchStart.touches[0].target);
         this.pointers = this.touchStart.touches.length;
         const longPressDelay = parseFloat(this.currentTarget.getAttribute('longpressdelay') || '0') || this.config.longPressDelay;
-        setTimeout(() => {
-            if (!this.touchMoved && this.touchDown) {
-                const touchDuration = Date.now() - this.touchStartTime;
-                const longPressEvent = new LongPressEvent_1.default(this.touchStart, touchDuration);
-                this.dispatchEvent(longPressEvent);
-                this.isLongPress = true;
-            }
-        }, longPressDelay);
+        if (!this.longPressTimeout) {
+            this.longPressTimeout = setTimeout(() => {
+                if (!this.touchMoved && this.touchDown) {
+                    const touchDuration = Date.now() - this.touchStartTime;
+                    const longPressEvent = new LongPressEvent_1.default(this.touchStart, touchDuration);
+                    this.dispatchEvent(longPressEvent);
+                    this.isLongPress = true;
+                    this.longPressTimeout = 0;
+                }
+            }, longPressDelay);
+        }
         if (this.touchStart.touches.length > 1) {
             const originPointerPrimary = new utils_1.Vec2(this.touchStart.touches[0].clientX, this.touchStart.touches[0].clientY);
             const originPointerSecondary = new utils_1.Vec2(this.touchStart.touches[1].clientX, this.touchStart.touches[1].clientY);
@@ -137,20 +218,44 @@ class GestureProvider {
                 const distance = currentPointerPrimary.substract(currentPointerSecondary);
                 if (this.scaleBase && Math.abs(this.scaleBase - distance.magnitude) > 10) {
                     const scaleFactor = distance.magnitude / this.scaleBase;
-                    const pinchEvent = new PinchEvent_1.default(touchMove, {
-                        scale: scaleFactor
-                    });
-                    this.dispatchEvent(pinchEvent);
+                    this.scale = scaleFactor;
+                    if (this.isPinching) {
+                        const pinchEvent = new PinchEvent_1.default(touchMove, {
+                            scale: scaleFactor
+                        });
+                        this.dispatchEvent(pinchEvent);
+                    }
+                    else {
+                        const pinchStartEvent = new PinchEvent_1.PinchStartEvent(touchMove, {
+                            scale: scaleFactor
+                        });
+                        this.dispatchEvent(pinchStartEvent);
+                        this.isPinching = true;
+                    }
                 }
-                const rotationAnchor = currentPointerPrimary;
+                this.anchor = currentPointerPrimary;
                 let rotationAngle = Math.atan2((originPointerPrimary.clientY - currentPointerSecondary.clientY), (originPointerPrimary.clientX - currentPointerSecondary.clientX));
                 rotationAngle < 0 ? rotationAngle += 1.5708 : rotationAngle -= 1.5708;
-                const rotateEvent = new RotateEvent_1.default(touchMove, {
-                    anchor: rotationAnchor,
-                    rotation: rotationAngle,
-                    rotationDeg: rotationAngle * 180 / Math.PI
-                });
-                this.dispatchEvent(rotateEvent);
+                this.rotation = rotationAngle;
+                this.rotationDeg = rotationAngle * 180 / Math.PI;
+                this.anchor = this.anchor;
+                if (this.isRotating) {
+                    const rotateEvent = new RotateEvent_1.default(touchMove, {
+                        anchor: this.anchor,
+                        rotation: this.rotation,
+                        rotationDeg: this.rotationDeg
+                    });
+                    this.dispatchEvent(rotateEvent);
+                }
+                else {
+                    const rotateStartEvent = new RotateEvent_1.RotateStartEvent(touchMove, {
+                        anchor: this.anchor,
+                        rotation: this.rotation,
+                        rotationDeg: this.rotationDeg
+                    });
+                    this.dispatchEvent(rotateStartEvent);
+                    this.isRotating = true;
+                }
             }
         }
         const origin = new utils_1.Vec2(this.touchStart.touches[0].clientX, this.touchStart.touches[0].clientY);
@@ -162,19 +267,41 @@ class GestureProvider {
             y: dxDy.y / length
         };
         const angle = Math.atan2(normalised.y, normalised.x);
-        const octant = Math.round(4 * angle / (2 * Math.PI) + 4) % 4;
+        this.octant = Math.round(4 * angle / (2 * Math.PI) + 4) % 4;
         const dt = (touchMove.timeStamp - this.touchStart.timeStamp) / 1000;
         const velocity = dxDy.magnitude / dt;
-        const swipeEvent = new SwipeEvent_1.default(touchMove, {
-            direction: CartesianDirectionEnum[(0, utils_1.closest)(octant, [0, 1, 2, 3])],
-            velocity: velocity
-        });
-        this.dispatchEvent(swipeEvent);
-        const panEvent = new PanEvent_1.default(touchMove, {
-            translation: dxDy,
-            velocity: velocity
-        });
-        this.dispatchEvent(panEvent);
+        if (this.isSwiping) {
+            const swipeEvent = new SwipeEvent_1.default(touchMove, {
+                direction: CartesianDirectionEnum[(0, utils_1.closest)(this.octant, [0, 1, 2, 3])],
+                velocity: velocity
+            });
+            this.dispatchEvent(swipeEvent);
+        }
+        else {
+            const swipeStartEvent = new SwipeEvent_1.SwipeStartEvent(touchMove, {
+                direction: CartesianDirectionEnum[(0, utils_1.closest)(this.octant, [0, 1, 2, 3])],
+                velocity: velocity
+            });
+            this.dispatchEvent(swipeStartEvent);
+            this.isSwiping = true;
+        }
+        this.dxDy = dxDy;
+        this.velocity = velocity;
+        if (this.isPanning) {
+            const panEvent = new PanEvent_1.default(touchMove, {
+                translation: dxDy,
+                velocity: velocity
+            });
+            this.dispatchEvent(panEvent);
+        }
+        else {
+            const panStartEvent = new PanEvent_1.PanStartEvent(touchMove, {
+                translation: dxDy,
+                velocity: velocity
+            });
+            this.dispatchEvent(panStartEvent);
+            this.isPanning = true;
+        }
     }
     onTouchEnd(touchEnd) {
         const numberOfTaps = parseInt(this.currentTarget.getAttribute('numberoftaps') || '0') || this.config.numberOfTaps;
@@ -201,8 +328,7 @@ class GestureProvider {
         }
         this.pointers = this.touchEnd.touches.length;
         this.lastTouchTime = this.touchEndTime;
-        if (touchEnd.touches.length)
-            this.onPointerLeave();
+        this.onPointerLeave(touchEnd);
         this.unbind(this.currentTarget);
         this.clean();
     }

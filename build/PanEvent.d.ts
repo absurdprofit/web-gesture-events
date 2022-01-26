@@ -12,9 +12,23 @@ interface PanData {
     translation: Vec2;
     velocity: number;
 }
-export default class PanEvent extends GestureEvent {
+declare enum PanLifecycleStateEnum {
+    start = 0,
+    end = 1
+}
+declare type PanLifecycleState = keyof typeof PanLifecycleStateEnum;
+declare abstract class PanEventBase extends GestureEvent {
     readonly translation: Translation;
     readonly velocity: number;
+    constructor(touchEvent: TouchEvent, panData: PanData, state?: PanLifecycleState);
+}
+export default class PanEvent extends PanEventBase {
+    constructor(touchEvent: TouchEvent, panData: PanData);
+}
+export declare class PanStartEvent extends PanEventBase {
+    constructor(touchEvent: TouchEvent, panData: PanData);
+}
+export declare class PanEndEvent extends PanEventBase {
     constructor(touchEvent: TouchEvent, panData: PanData);
 }
 export {};
