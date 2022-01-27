@@ -31,9 +31,10 @@ export default abstract class GestureEvent extends TouchEvent {
             ctrlKey: touchEvent.ctrlKey,
             shiftKey: touchEvent.shiftKey,
             altKey: touchEvent.altKey,
-            metaKey: touchEvent.metaKey
+            metaKey: touchEvent.metaKey,
+            bubbles: true
         });
-        if (type.includes("end")) {
+        if (type.includes("end") || touchEvent.type.includes("end")) {
             this.gestureTarget = touchEvent.changedTouches[0].target;
             this.x = touchEvent.changedTouches[0].clientX;
             this.y = touchEvent.changedTouches[0].clientY;

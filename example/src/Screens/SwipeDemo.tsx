@@ -121,7 +121,7 @@ export default class SwipeDemo extends React.Component<SwipeDemoProps, SwipeDemo
                     <Navbar title="Swipe Event Demo" on_back={() => this.props.navigation.go_back()} />
                 </SharedElement>
                 <EventData eventData={this.state.eventData} />
-                <div ref={this.setSwipeAreaRef} className="swipe-area" {...{"data-gesturetarget": true}}></div>
+                <div ref={this.setSwipeAreaRef} className="swipe-area"></div>
                 <canvas ref={this.setCanvasRef}></canvas>
             </div>
         );

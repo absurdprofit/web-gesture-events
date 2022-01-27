@@ -8,6 +8,9 @@
   user-select: none;
   font-family: 'Roboto', sans-serif;
 }
+body.touch-auto .screen {
+  touch-action: auto;
+}
 html,
 body,
 header {

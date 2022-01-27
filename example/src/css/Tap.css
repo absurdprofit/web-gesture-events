@@ -3,6 +3,9 @@
     display: flex;
     flex-direction: column;
 }
+.tap-demo > *, .tap-demo {
+    touch-action: auto;
+}
 .tap-demo .content {
     flex: 1;
     display: flex;

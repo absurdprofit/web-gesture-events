@@ -9,8 +9,8 @@ import RotateEvent, { RotateEndEvent, RotateStartEvent } from "./RotateEvent";
 import {closest, Vec2} from './utils';
 
 interface GestureProviderConfig {
-    longPressDelay: number;
-    doubleTapDelay: number; // maximum time in miliseconds that can pass between taps
+    longPressDuration: number;
+    tapDelay: number; // maximum time in miliseconds that can pass between taps
     minPointers: number; // minimum number of pointers required before events are fired
     numberOfTaps: number; // number of tap gestures required to fire tap event
 }
@@ -48,7 +48,6 @@ export default class GestureProvider {
     private touchMoved: boolean = false;
     private touchDown: boolean = false;
     private shouldFire: boolean = false;
-    private doubleTap: boolean = false;
     private pointers: number = 0;
     private isLongPress: boolean = false;
     private longPressTimeout: number = 0;
@@ -58,8 +57,8 @@ export default class GestureProvider {
     private touchCancelListener = this.onTouchCancel.bind(this);
     private currentTarget: Window | EventTarget = window;
     public config: GestureProviderConfig = {
-        longPressDelay: 500,
-        doubleTapDelay: 500,
+        longPressDuration: 500,
+        tapDelay: 500,
         minPointers: 1,
         numberOfTaps: 0
     }
@@ -124,7 +123,6 @@ export default class GestureProvider {
                 const pinchEndEvent = new PinchEndEvent(touchEnd, {
                     scale: this.scale
                 });
-
                 this.dispatchEvent(pinchEndEvent);
                 this.isPinching = false;
             }
@@ -150,7 +148,12 @@ export default class GestureProvider {
     }
 
     onTouchStart(touchStart: TouchEvent) {
-        if ('gesturetarget' in (touchStart.touches[0].target as HTMLElement).dataset === false) return;
+        if (this.currentTarget !== touchStart.touches[0].target) {
+            this.clean();
+            this.unbind(this.currentTarget);
+            this.pointers = this.touchEnd.touches.length;
+            this.taps = 0;
+        }
         this.touchStart = touchStart;
         const minPointers = parseInt((touchStart.touches[0].target as HTMLElement).dataset.minpointers || '0') || this.config.minPointers; 
         if (this.touchStart.touches.length < minPointers) {
@@ -164,7 +167,7 @@ export default class GestureProvider {
         if (!this.pointers) this.bind(touchStart.touches[0].target);
         this.pointers = this.touchStart.touches.length;
 
-        const longPressDelay = parseFloat((this.currentTarget as HTMLElement).dataset.longpressdelay || '0') || this.config.longPressDelay;
+        const longPressDuration = parseFloat((this.currentTarget as HTMLElement).dataset.longpressduration || '0') || this.config.longPressDuration;
         if (!this.longPressTimeout) {
             this.longPressTimeout = setTimeout(() => {
                 if (!this.touchMoved && this.touchDown) {
@@ -174,7 +177,7 @@ export default class GestureProvider {
                     this.isLongPress = true;
                     this.longPressTimeout = 0;
                 }
-            }, longPressDelay);
+            }, longPressDuration);
         }
 
 
@@ -315,22 +318,21 @@ export default class GestureProvider {
         if (this.shouldFire) {
             this.touchEnd = touchEnd;
             this.touchEndTime = touchEnd.timeStamp;
-            const doubleTapDelay = parseFloat((this.currentTarget as HTMLElement).dataset.doubletapdelay || '0') || this.config.doubleTapDelay;
+            const maxTapDelay = parseFloat((this.currentTarget as HTMLElement).dataset.tapdelay || '0') || this.config.tapDelay;
             if (!this.touchMoved && !this.isLongPress) {
-                if ((this.touchEndTime - this.lastTouchTime) < doubleTapDelay && !this.doubleTap) {
-                    this.doubleTap = true;
-                    const doubleTapEvent = new DoubleTapEvent(this.touchStart);
-                    this.dispatchEvent(doubleTapEvent);
-
-                    this.lastTouchTime = 0;
-                } else {
-                    this.doubleTap = false;
-                    const tapEvent = new TapEvent(this.touchStart);
+                // if not first tap then check tap delay
+                if (this.taps === 1 || (this.touchEndTime - this.lastTouchTime) < maxTapDelay) {
+                    if (this.taps % 2 === numberOfTaps) {
+                        const doubleTapEvent = new DoubleTapEvent(touchEnd);
+                        this.dispatchEvent(doubleTapEvent);
+                        this.taps = 0;
+                    }
+                    const tapEvent = new TapEvent(touchEnd);
                     this.dispatchEvent(tapEvent);
+                } else {
+                    this.taps = 0;
                 }
-
             }
-            this.taps = 0;
         }
 
         this.pointers = this.touchEnd.touches.length;

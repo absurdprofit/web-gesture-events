@@ -12,9 +12,10 @@
   backdrop-filter: saturate(180%) blur(20px);
   z-index: 1000;
 }
-
-.navbar .back {
+.navbar .MuiButtonBase-root {
   color: white;
+}
+.navbar .back {
   position: absolute;
   left: 15px;
   display: flex;

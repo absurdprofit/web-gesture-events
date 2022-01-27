@@ -29,6 +29,11 @@ export default function Home(props: HomeProps) {
             title: 'Pan Demo',
             description: 'Pan map with pan event listener',
             onClick: () => props.navigation.navigate('/pan')
+        },
+        {
+            title: 'Pinch Demo',
+            description: 'Pinch to scale SVG',
+            onClick: () => props.navigation.navigate('/pinch')
         }
     ]
     return (

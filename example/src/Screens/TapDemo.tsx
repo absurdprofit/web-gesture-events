@@ -15,6 +15,8 @@ interface TapDemoState {
     longPress: boolean;
 }
 export default class TapDemo extends React.Component<TapDemoProps, TapDemoState> {
+    private observer: ResizeObserver = new ResizeObserver(this.observe.bind(this));
+    private ref: HTMLElement | null = null;
     private tapRef: HTMLElement | null = null;
     private doubleTapRef: HTMLElement | null = null;
     private tripleTapRef: HTMLElement | null = null;
@@ -40,12 +42,31 @@ export default class TapDemo extends React.Component<TapDemoProps, TapDemoState>
 
     componentWillUnmount() {
         window.removeEventListener('contextmenu', this.onContextMenuListener);
+        
+        if (this.ref) this.observer.unobserve(this.ref);
+    }
+
+    observe(entries: ResizeObserverEntry[]) {
+        if (entries.length) {
+            if (entries[0].contentRect.height > window.innerHeight) {
+                document.body.classList.add('touch-auto');
+                if (this.ref) {
+                    this.ref.style.paddingBottom = '50px';
+                }
+            } else {
+                document.body.classList.remove('touch-auto');
+                if (this.ref) {
+                    this.ref.style.paddingBottom = '0px';
+                }
+            }
+        }
     }
 
     onContextMenu(e: Event) {
         e.preventDefault();
     }
 
+    
     onTap(ev: TapEvent) {
         if (ev.gestureTarget !== this.tapRef) return;
         this.setState({tap: true}, () => {
@@ -106,7 +127,7 @@ export default class TapDemo extends React.Component<TapDemoProps, TapDemoState>
                     this.tripleTapRef.removeEventListener('doubletap', this.onTripleTapListener);
                 }
                 this.tripleTapRef = ref;
-                ref.addEventListener('tap', this.onTripleTapListener);
+                ref.addEventListener('doubletap', this.onTripleTapListener);
             }
             if (ref.classList.contains('longpress')) {
                 if (this.longPressRef) {
@@ -117,28 +138,37 @@ export default class TapDemo extends React.Component<TapDemoProps, TapDemoState>
                 ref.addEventListener('longpress', this.onLongPressListener);
                 ref.addEventListener('touchend', this.onTouchEndListener);
             }
+            if (ref.classList.contains('tap-demo')) {
+                if (this.ref) {
+                    this.observer.unobserve(this.ref);
+                }
+                this.ref = ref;
+                if (ref) {
+                    this.observer.observe(ref);
+                }
+            }
         }
     }
     render() {
         return (
-            <div className="tap-demo">
+            <div className="tap-demo" ref={this.setRef}>
                 <SharedElement id="navbar">
                     <Navbar title="Tap Demo" on_back={() => this.props.navigation.go_back()}/>
                 </SharedElement>
                 <div className="content">
-                    <div ref={this.setRef} className="card tap" {...{"data-gesturetarget": true}} style={{opacity: this.state.tap ? '1' : '0.5'}}>
+                    <div ref={this.setRef} className="card tap" style={{opacity: this.state.tap ? '1' : '0.5'}}>
                         <h3>Tap</h3>
                     </div>
-                    <div ref={this.setRef} className="card doubletap" {...{"data-gesturetarget": true}} style={{opacity: this.state.doubleTap ? '1' : '0.5'}}>
+                    <div ref={this.setRef} className="card doubletap" style={{opacity: this.state.doubleTap ? '1' : '0.5'}}>
                         <h3>Double Tap</h3>
                     </div>
                     <div ref={this.setRef} className="card tripletap" {...{
                         "data-gesturetarget": true,
-                        "data-numberoftaps": 2
+                        "data-numberoftaps": 1
                     }} style={{opacity: this.state.tripleTap ? '1' : '0.5'}}>
                         <h3>Triple Tap</h3>
                     </div>
-                    <div ref={this.setRef} className="card longpress" {...{"data-gesturetarget": true}} style={{opacity: this.state.longPress ? '1' : '0.5'}}>
+                    <div ref={this.setRef} className="card longpress" style={{opacity: this.state.longPress ? '1' : '0.5'}}>
                         <h3>Long Press</h3>
                     </div>
                 </div>
