@@ -85,7 +85,7 @@ Data- prefixed attributes recognised on DOM elements.
 ### SwipeEvent
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| types | "swipestart", "swipe", "swipeend"``` | Events fired over the lifecycle of a swipe. |
+| types | "swipestart", "swipe", "swipeend" | Events fired over the lifecycle of a swipe. |
 | velocity | number | Instantaneous velocity of user swipe. In case of swipeend velocity equals average velocity of swipe. |
 | direction | "up", "down", "left" or "right" | Direction of the user swipe relative to the gesture origin. |
 
