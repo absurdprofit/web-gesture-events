@@ -6,6 +6,7 @@ import PanDemo from './Screens/PanDemo';
 import PinchDemo from './Screens/PinchDemo';
 import CompoundDemo from './Screens/CompoundDemo';
 import TapDemo from './Screens/TapDemo';
+import RotateDemo from './Screens/RotateDemo';
 import './css/App.css';
 
 interface AppState {
@@ -20,6 +21,7 @@ class App extends React.Component<{}, AppState> {
   render() {
     return (
       <Router config={{
+        default_route: '/',
         animation: {
           type: 'fade',
           duration: 250
@@ -30,6 +32,7 @@ class App extends React.Component<{}, AppState> {
         <Stack.Screen component={TapDemo} path="/tap" />
         <Stack.Screen component={PanDemo} path="/pan" />
         <Stack.Screen component={SwipeDemo} path="/swipe" />
+        <Stack.Screen component={RotateDemo} path="/rotate" />
         <Stack.Screen component={CompoundDemo} path="/compound" />
       </Router>
     );

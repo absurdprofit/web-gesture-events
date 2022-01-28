@@ -6,3 +6,6 @@
   bottom: 0;
   overflow: hidden;
 }
+.compound-demo .content {
+  overflow: hidden;
+}

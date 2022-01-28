@@ -31,6 +31,11 @@ export default function Home(props: HomeProps) {
             onClick: () => props.navigation.navigate('/pan')
         },
         {
+            title: 'Rotate Demo',
+            description: 'Rotate an SVG with rotate event listener',
+            onClick: () => props.navigation.navigate('/rotate')
+        },
+        {
             title: 'Pinch Demo',
             description: 'Pinch to scale SVG with pinch event listener',
             onClick: () => props.navigation.navigate('/pinch')
