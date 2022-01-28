@@ -85,21 +85,21 @@ Data- prefixed attributes recognised on DOM elements.
 ### SwipeEvent
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| types | ```"swipestart" | "swipe" | "swipeend"``` | Events fired over the lifecycle of a swipe. |
+| types | "swipestart", "swipe", "swipeend"``` | Events fired over the lifecycle of a swipe. |
 | velocity | number | Instantaneous velocity of user swipe. In case of swipeend velocity equals average velocity of swipe. |
 | direction | "up", "down", "left" or "right" | Direction of the user swipe relative to the gesture origin. |
 
 ### PanEvent
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| types | ```"panstart" | "pan" | "pan"``` | Events fired over the lifecycle of a pan. |
+| types | "panstart", "pan", "pan" | Events fired over the lifecycle of a pan. |
 | velocity | number | Instantaneous velocity of user pan. In case of panend velocity equals average velocity of swipe. |
 | translation | Translation | Object that contains x and y movements of user gesture relative to gesture origin and viewport. |
 
 ### RotateEvent
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| types | ```"rotatestart" | "rotate" | "rotateend"``` | Events fired over the lifecycle of a rotation. |
+| types | "rotatestart", "rotate", "rotateend" | Events fired over the lifecycle of a rotation. |
 | rotation | number | Rotation about the anchor (primary pointer) in radians. |
 | rotationDeg | number | Rotation about the anchor (primary pointer) in degrees. |
 | anchor | Anchor | Object that contains x and y positions of rotation anchor point relative to gesture origin and viewport. |
@@ -107,7 +107,7 @@ Data- prefixed attributes recognised on DOM elements.
 ### PinchEvent
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| types | ```"pinchstart" | "pinch" | "pinchend"``` | Events fired over the lifecycle of a pinch. |
+| types | "pinchstart", "pinch", "pinchend" | Events fired over the lifecycle of a pinch. |
 | scale | number | Scale factor relative to primary and secondary touch points' distance. |
 
 ## Remarks
