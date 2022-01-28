@@ -1,5 +1,5 @@
 # Web Gesture Events
-A library that brings high-level gestures to the web by extending the standard addEventListener interface. ☝🏾📱
+A library that brings high-level asynchronous gesture events to the web by extending the standard addEventListener interface. ☝🏾📱
 
 [Demo](https://gesture.nxtetechnologies.com)
 
@@ -14,6 +14,7 @@ A library that brings high-level gestures to the web by extending the standard a
 - [API Documentation](#api-documentation)
     - [Gesture Provider Config](#gesture-provider-config)
     - [Config Attributes](#config-attributes)
+    - [GestureEvent](#gestureevent)
     - [LongPressEvent](#longpressevent)
     - [SwipeEvent](#swipeevent)
     - [PanEvent](#panevent)
@@ -68,6 +69,13 @@ Data- prefixed attributes recognised on DOM elements.
 | data-longpressduration | string | Minimum duration in milliseconds for a touch to be persisted to fire a single LongPressEvent. |
 | data-tapdelay | string | Maximum time in milliseconds that can pass between taps. |
 | data-numberoftaps | string | Number of taps required before tap events are fired. |
+
+### GestureEvent
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| gestureTarget | EventTarget | The element that the primary pointer TouchStart event targeted. |
+| x | number | Horizontal position of the primary pointer relative to the viewport. |
+| y | number | Vertical position of the primary pointer relative to the viewport. |
 
 ### LongPressEvent
 | Property | Type | Description |
