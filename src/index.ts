@@ -142,8 +142,7 @@ export default class GestureProvider {
 
     dispatchEvent(gestureEvent: GestureEvent) {
         queueMicrotask(() => {
-            if (this.currentTarget.constructor.name !== "Window") this.currentTarget.dispatchEvent(gestureEvent);
-            window.dispatchEvent(gestureEvent);
+            this.currentTarget.dispatchEvent(gestureEvent);
         });
     }
 

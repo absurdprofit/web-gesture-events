@@ -32,8 +32,13 @@ export default function Home(props: HomeProps) {
         },
         {
             title: 'Pinch Demo',
-            description: 'Pinch to scale SVG',
+            description: 'Pinch to scale SVG with pinch event listener',
             onClick: () => props.navigation.navigate('/pinch')
+        },
+        {
+            title: 'Compound Gesture Demo',
+            description: 'Pan, Scale and Rotate a map using a combination of event listeners',
+            onClick: () => props.navigation.navigate('/compound')
         }
     ]
     return (

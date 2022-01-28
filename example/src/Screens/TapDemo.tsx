@@ -67,8 +67,7 @@ export default class TapDemo extends React.Component<TapDemoProps, TapDemoState>
     }
 
     
-    onTap(ev: TapEvent) {
-        if (ev.gestureTarget !== this.tapRef) return;
+    onTap() {
         this.setState({tap: true}, () => {
             setTimeout(() => {
                 this.setState({tap: false});
@@ -76,8 +75,7 @@ export default class TapDemo extends React.Component<TapDemoProps, TapDemoState>
         });
     }
 
-    onDoubleTap(ev: DoubleTapEvent) {
-        if (ev.gestureTarget !== this.doubleTapRef) return;
+    onDoubleTap() {
         this.setState({doubleTap: true}, () => {
             setTimeout(() => {
                 this.setState({doubleTap: false});
@@ -85,8 +83,7 @@ export default class TapDemo extends React.Component<TapDemoProps, TapDemoState>
         });
     }
 
-    onTripleTap(ev: DoubleTapEvent) {
-        if (ev.gestureTarget !== this.tripleTapRef) return;
+    onTripleTap() {
         this.setState({tripleTap: true}, () => {
             setTimeout(() => {
                 this.setState({tripleTap: false});
@@ -94,8 +91,7 @@ export default class TapDemo extends React.Component<TapDemoProps, TapDemoState>
         })
     }
 
-    onLongPress(ev: LongPressEvent) {
-        if (ev.gestureTarget !== this.longPressRef) return;
+    onLongPress() {
         if ('vibrate' in navigator) {
             navigator.vibrate(100);
         }
