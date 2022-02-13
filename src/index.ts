@@ -64,14 +64,14 @@ export default class GestureProvider {
     }
     constructor() {
         if (!GestureProvider.listening) {
-            window.addEventListener('touchstart', this.touchStartListener, true);
+            window.addEventListener('touchstart', this.touchStartListener, {passive: false});
             GestureProvider.listening = true;
         }
     }
     
     bind(target: Window | EventTarget) {
         this.unbind(this.currentTarget);
-        target.addEventListener('touchmove', this.touchMoveListener, true);
+        target.addEventListener('touchmove', this.touchMoveListener, {passive: false});
         target.addEventListener('touchend', this.touchEndListener, true);
         target.addEventListener('touchcancel', this.touchCancelListener, true);
         this.currentTarget = target;
@@ -142,7 +142,9 @@ export default class GestureProvider {
 
     dispatchEvent(gestureEvent: GestureEvent) {
         queueMicrotask(() => {
-            this.currentTarget.dispatchEvent(gestureEvent);
+            if (this.currentTarget.dispatchEvent(gestureEvent)) {
+                this.touchMove.preventDefault();
+            }
         });
     }
 

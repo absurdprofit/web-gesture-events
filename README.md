@@ -92,7 +92,7 @@ Data- prefixed attributes recognised on DOM elements.
 ### PanEvent
 | Property | Type | Description |
 | ------ | ------ | ------ |
-| types | "panstart", "pan", "pan" | Events fired over the lifecycle of a pan. |
+| types | "panstart", "pan", "panend" | Events fired over the lifecycle of a pan. |
 | velocity | number | Instantaneous velocity of user pan. In case of panend velocity equals average velocity of swipe. |
 | translation | Translation | Object that contains x and y movements of user gesture relative to gesture origin and viewport. |
 
@@ -111,7 +111,7 @@ Data- prefixed attributes recognised on DOM elements.
 | scale | number | Scale factor relative to primary and secondary touch points' distance. |
 
 ## Remarks
-There are a few potential drawbacks I haven't been able to overcome. For example the data-attribute config options might not work if a gesture event listener uses bubbling. Also event though these gesture events are asynchronous there is still the problem that the browser currently does not offer a way to query if event listeners exist on an element anywhere in the DOM tree. Meaning events are always fired regardless of if an event listener was detected or not. Also these events are not trusted events so do bare that in mind whenever using these events to accomplish things that require user interaction such as toggling fullscreen or resuming an audio context.
+There are a few potential drawbacks I haven't been able to overcome. For example the data-attribute config options might not work if a gesture event listener uses bubbling. Also even though these gesture events are asynchronous there is still the problem that the browser currently does not offer a way to query if event listeners exist on an element anywhere in the DOM tree. Meaning events are always fired regardless of if an event listener was detected or not. Also these events are not trusted events so do bare that in mind whenever using these events to accomplish things that require user interaction such as toggling fullscreen or resuming an audio context.
 ## Credits
 1. [React Native Gesture Handler](https://github.com/software-mansion/react-native-gesture-handler)
 2. [Introduction to events](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Building_blocks/Events)
