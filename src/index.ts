@@ -142,9 +142,7 @@ export default class GestureProvider {
 
     dispatchEvent(gestureEvent: GestureEvent) {
         queueMicrotask(() => {
-            if (this.currentTarget.dispatchEvent(gestureEvent)) {
-                gestureEvent.preventDefault();
-            }
+            this.currentTarget.dispatchEvent(gestureEvent);
         });
     }
 
