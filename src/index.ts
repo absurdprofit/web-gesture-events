@@ -64,14 +64,14 @@ export default class GestureProvider {
     }
     constructor() {
         if (!GestureProvider.listening) {
-            window.addEventListener('touchstart', this.touchStartListener, {passive: false});
+            window.addEventListener('touchstart', this.touchStartListener, true);
             GestureProvider.listening = true;
         }
     }
     
     bind(target: Window | EventTarget) {
         this.unbind(this.currentTarget);
-        target.addEventListener('touchmove', this.touchMoveListener, {passive: false});
+        target.addEventListener('touchmove', this.touchMoveListener, true);
         target.addEventListener('touchend', this.touchEndListener, true);
         target.addEventListener('touchcancel', this.touchCancelListener, true);
         this.currentTarget = target;
