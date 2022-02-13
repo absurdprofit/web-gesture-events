@@ -37,7 +37,7 @@ Add event listeners as you would using the addEventListener interface. The Gestu
 import 'web-gesture-events'; // top level import only side-effects
 ...
 
-import {SwipeEvent} from 'web-gesture-events;
+import {SwipeEvent} from 'web-gesture-events';
 
 window.addEventListener('swipe', (ev) => {
     console.log(ev.direction, ev.velocity); // direction and instantaneous velocity
