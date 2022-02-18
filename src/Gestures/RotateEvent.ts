@@ -1,5 +1,5 @@
 import GestureEvent from "./GestureEvent";
-import { Vec2 } from "./utils";
+import { Vec2 } from "../utils";
 
 interface Anchor {
     x: number;

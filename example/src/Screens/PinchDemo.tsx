@@ -49,7 +49,7 @@ export default class PinchDemo extends React.Component<PinchDemoProps, PinchDemo
         return(
             <div className="pinch-demo">
                 <SharedElement id="navbar">
-                    <Navbar title="Pinch Demo" on_back={() => this.props.navigation.go_back()} />
+                    <Navbar title="Pinch Demo" on_back={() => this.props.navigation.goBack()} />
                 </SharedElement>
                 <div className="content">
                     <div className="logo-wrap" ref={this.setRef} style={{transform: `scale(${this.state.scale})`}}>

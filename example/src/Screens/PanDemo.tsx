@@ -48,7 +48,7 @@ export default class PanDemo extends React.Component<PanDemoProps, PanDemoState>
         return (
             <div className="pan-demo">
                 <SharedElement id="navbar">
-                    <Navbar title="Pan Event Demo" on_back={() => this.props.navigation.go_back()} />
+                    <Navbar title="Pan Event Demo" on_back={() => this.props.navigation.goBack()} />
                 </SharedElement>
                 <div className="content" ref={this.setRef}>
                     <div

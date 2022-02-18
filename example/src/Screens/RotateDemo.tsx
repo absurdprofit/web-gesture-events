@@ -50,7 +50,7 @@ export default class RotateDemo extends React.Component<RotateDemoProps, RotateD
         return (
             <div className="rotate-demo">
                 <SharedElement id="navbar">
-                    <Navbar title="Rotate Demo" on_back={() => this.props.navigation.go_back()} />
+                    <Navbar title="Rotate Demo" on_back={() => this.props.navigation.goBack()} />
                 </SharedElement>
                 <EventData eventData={{rotation: `${this.state.rotation}°`}} />
                 <div className="content">

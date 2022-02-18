@@ -89,7 +89,7 @@ export default class CompoundDemo extends React.Component<CompoundDemoProps, Com
         return (
             <div className="compound-demo">
                 <SharedElement id="navbar">
-                    <Navbar title="Compound Demo" on_back={() => this.props.navigation.go_back()} />
+                    <Navbar title="Compound Demo" on_back={() => this.props.navigation.goBack()} />
                 </SharedElement>
                 <div className="content" ref={this.setRef}>
                     <div

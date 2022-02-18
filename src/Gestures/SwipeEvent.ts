@@ -1,4 +1,4 @@
-import { GestureEvent } from ".";
+import GestureEvent from "./GestureEvent";
 
 type Direction = "left" | "right" | "up" | "down";
 

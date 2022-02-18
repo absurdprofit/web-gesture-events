@@ -149,7 +149,7 @@ export default class TapDemo extends React.Component<TapDemoProps, TapDemoState>
         return (
             <div className="tap-demo" ref={this.setRef}>
                 <SharedElement id="navbar">
-                    <Navbar title="Tap Demo" on_back={() => this.props.navigation.go_back()}/>
+                    <Navbar title="Tap Demo" on_back={() => this.props.navigation.goBack()}/>
                 </SharedElement>
                 <div className="content">
                     <div ref={this.setRef} className="card tap" style={{opacity: this.state.tap ? '1' : '0.5'}}>

@@ -48,7 +48,9 @@ export default function Home(props: HomeProps) {
     ]
     return (
         <div className="home">
-            <SharedElement id="navbar">
+            <SharedElement id="navbar" config={{
+                type: 'fade'
+            }}>
                 <Navbar title="Gesture Event Demo" />
             </SharedElement>
             <div className="list">

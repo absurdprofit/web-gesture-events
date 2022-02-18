@@ -1,11 +1,11 @@
-import GestureEvent from "./GestureEvent";
-import LongPressEvent from "./LongPressEvent";
-import TapEvent from './TapEvent';
-import DoubleTapEvent from './DoubleTapEvent';
-import SwipeEvent, { SwipeEndEvent, SwipeStartEvent } from "./SwipeEvent";
-import PanEvent, { PanEndEvent, PanStartEvent } from "./PanEvent";
-import PinchEvent, { PinchEndEvent, PinchStartEvent } from "./PinchEvent";
-import RotateEvent, { RotateEndEvent, RotateStartEvent } from "./RotateEvent";
+import GestureEvent from "./Gestures/GestureEvent";
+import LongPressEvent from "./Gestures/LongPressEvent";
+import TapEvent from './Gestures/TapEvent';
+import DoubleTapEvent from './Gestures/DoubleTapEvent';
+import SwipeEvent, { SwipeEndEvent, SwipeStartEvent } from "./Gestures/SwipeEvent";
+import PanEvent, { PanEndEvent, PanStartEvent } from "./Gestures/PanEvent";
+import PinchEvent, { PinchEndEvent, PinchStartEvent } from "./Gestures/PinchEvent";
+import RotateEvent, { RotateEndEvent, RotateStartEvent } from "./Gestures/RotateEvent";
 import {closest, Vec2} from './utils';
 
 interface GestureProviderConfig {
