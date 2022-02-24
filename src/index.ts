@@ -25,10 +25,10 @@ enum CartesianDirectionEnum {
 
 export default class GestureProvider {
     private static listening: boolean = false;
-    private touchStart: TouchEvent = new TouchEvent('touchstart');
-    private touchMove: TouchEvent = new TouchEvent('touchmove');
-    private touchEnd: TouchEvent = new TouchEvent('touchend');
-    private touchCancel: TouchEvent = new TouchEvent('touchcancel');
+    private touchStart: TouchEvent = new TouchEvent('touchstart') || {};
+    private touchMove: TouchEvent = new TouchEvent('touchmove') || {};
+    private touchEnd: TouchEvent = new TouchEvent('touchend') || {};
+    private touchCancel: TouchEvent = new TouchEvent('touchcancel') || {};
     private velocity: number = 0;
     private dxDy: Vec2 = new Vec2(0, 0);
     private scale: number = 1;
@@ -64,7 +64,7 @@ export default class GestureProvider {
     }
     constructor() {
         if (!GestureProvider.listening) {
-            window.addEventListener('touchstart', this.touchStartListener, true);
+            if (TouchEvent) window.addEventListener('touchstart', this.touchStartListener, true);
             GestureProvider.listening = true;
         }
     }
@@ -396,7 +396,7 @@ declare global {
     }
 }
 
-window.gestureProvider = new GestureProvider();
+if (TouchEvent) window.gestureProvider = new GestureProvider();
 
 export {
     TapEvent,
