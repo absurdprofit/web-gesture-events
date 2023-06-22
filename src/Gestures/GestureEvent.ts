@@ -18,7 +18,10 @@ enum GestureEventTypeEnum {
 
 
 type GestureEventType = keyof typeof GestureEventTypeEnum;
-
+if (window.TouchEvent === undefined) {
+    // avoid breaking in WebKit environments
+    (window as any).TouchEvent = PointerEvent;
+}
 export default abstract class GestureEvent extends TouchEvent {
     readonly gestureTarget: EventTarget;
     readonly x: number;

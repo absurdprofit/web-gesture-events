@@ -1,0 +1,32 @@
+{
+  "name": "web-gesture-events",
+  "version": "0.0.10",
+  "description": "A library that brings high-level asynchronous gesture events to the web by extending the standard addEventListener interface. ☝🏾📱",
+  "main": "build/index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nxtexe/web-gesture-events.git"
+  },
+  "keywords": [
+    "TouchEvents",
+    "Gestures",
+    "web",
+    "pwa",
+    "interactivity",
+    "swipe-gestures",
+    "gestures"
+  ],
+  "author": "nxtexe",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/nxtexe/web-gesture-events/issues"
+  },
+  "homepage": "https://github.com/nxtexe/web-gesture-events#readme",
+  "devDependencies": {
+    "typescript": "^5.1.3"
+  }
+}
