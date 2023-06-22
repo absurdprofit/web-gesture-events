@@ -1,6 +1,6 @@
 {
   "name": "web-gesture-events",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "A library that brings high-level asynchronous gesture events to the web by extending the standard addEventListener interface. ☝🏾📱",
   "main": "build/index.js",
   "scripts": {
