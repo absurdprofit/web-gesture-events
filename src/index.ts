@@ -353,6 +353,55 @@ export default class GestureProvider {
     }
 }
 
+// global event dispatching
+function GLOBAL_EVENT_DISPATCHER(event: GestureEventMap[keyof GestureEventMap]) {
+    const type = event.type as keyof GestureEventMap;
+    const path = event.composedPath();
+    path.forEach((target) => {
+        if (target instanceof HTMLElement) {
+            const callback = target[GlobalEventKeyMap[type]];
+            if (typeof callback !== "function") return;
+            (callback as any).apply(target, [event]);
+        }
+    });
+}
+
+if (!window.GLOBAL_EVENT_DISPATCHER) {
+    window.addEventListener('tap', GLOBAL_EVENT_DISPATCHER, {passive: true});
+    window.addEventListener('longpress', GLOBAL_EVENT_DISPATCHER, {passive: true});
+    window.addEventListener('doubletap', GLOBAL_EVENT_DISPATCHER, {passive: true});
+    window.addEventListener('swipestart', GLOBAL_EVENT_DISPATCHER, {passive: true});
+    window.addEventListener('swipe', GLOBAL_EVENT_DISPATCHER, {passive: true});
+    window.addEventListener('swipeend', GLOBAL_EVENT_DISPATCHER, {passive: true});
+    window.addEventListener('panstart', GLOBAL_EVENT_DISPATCHER, {passive: true});
+    window.addEventListener('pan', GLOBAL_EVENT_DISPATCHER, {passive: true});
+    window.addEventListener('panend', GLOBAL_EVENT_DISPATCHER, {passive: true});
+    window.addEventListener('pinchstart', GLOBAL_EVENT_DISPATCHER, {passive: true});
+    window.addEventListener('pinch', GLOBAL_EVENT_DISPATCHER, {passive: true});
+    window.addEventListener('pinchend', GLOBAL_EVENT_DISPATCHER, {passive: true});
+    window.addEventListener('rotatestart', GLOBAL_EVENT_DISPATCHER, {passive: true});
+    window.addEventListener('rotate', GLOBAL_EVENT_DISPATCHER, {passive: true});
+    window.addEventListener('rotateend', GLOBAL_EVENT_DISPATCHER, {passive: true});
+}
+
+const GlobalEventKeyMap = {
+    "tap": "ontap",
+    "doubletap": "ondoubletap",
+    "longpress": "onlongpress",
+    "swipestart": "onswipestart",
+    "swipe": "onswipe",
+    "swipeend": "onswipeend",
+    "panstart": "onpanstart",
+    "pan": "onpan",
+    "panend": "onpanend",
+    "pinchstart": "onpinchstart",
+    "pinch": "onpinch",
+    "pinchend": "onpinchend",
+    "rotatestart": "onrotatestart",
+    "rotate": "onrotate",
+    "rotateend": "onrotateend",
+} as const;
+
 interface GestureEventMap {
     "tap": TapEvent;
     "longpress": LongPressEvent;
@@ -372,22 +421,26 @@ interface GestureEventMap {
 }
 
 declare global {
-    // interface GlobalEventHandlers {
-    //     onswipestart: ((this: GlobalEventHandlers, ev: SwipeStartEvent) => any) | null;
-    //     onswipe: ((this: GlobalEventHandlers, ev: SwipeEvent) => any) | null;
-    //     onswipeend: ((this: GlobalEventHandlers, ev: SwipeEndEvent) => any) | null;
-    //     onpanstart: ((this: GlobalEventHandlers, ev: PanStartEvent) => any) | null;
-    //     onpan: ((this: GlobalEventHandlers, ev: PanEvent) => any) | null;
-    //     onpanend: ((this: GlobalEventHandlers, ev: PanEndEvent) => any) | null;
-    //     onpinchstart: ((this: GlobalEventHandlers, ev: PinchStartEvent) => any) | null;
-    //     onpinch: ((this: GlobalEventHandlers, ev: PinchEvent) => any) | null;
-    //     onpinchend: ((this: GlobalEventHandlers, ev: PinchEndEvent) => any) | null;
-    //     onrotatestart: ((this: GlobalEventHandlers, ev: RotateStartEvent) => any) | null;
-    //     onrotate: ((this: GlobalEventHandlers, ev: RotateEvent) => any) | null;
-    //     onrotateend: ((this: GlobalEventHandlers, ev: RotateEndEvent) => any) | null;
-    // }
+    interface GlobalEventHandlers {
+        ontap: ((this: GlobalEventHandlers, ev: TapEvent) => any) | null;
+        ondoubletap: ((this: GlobalEventHandlers, ev: DoubleTapEvent) => any) | null;
+        onlongpress: ((this: GlobalEventHandlers, ev: LongPressEvent) => any) | null;
+        onswipestart: ((this: GlobalEventHandlers, ev: SwipeStartEvent) => any) | null;
+        onswipe: ((this: GlobalEventHandlers, ev: SwipeEvent) => any) | null;
+        onswipeend: ((this: GlobalEventHandlers, ev: SwipeEndEvent) => any) | null;
+        onpanstart: ((this: GlobalEventHandlers, ev: PanStartEvent) => any) | null;
+        onpan: ((this: GlobalEventHandlers, ev: PanEvent) => any) | null;
+        onpanend: ((this: GlobalEventHandlers, ev: PanEndEvent) => any) | null;
+        onpinchstart: ((this: GlobalEventHandlers, ev: PinchStartEvent) => any) | null;
+        onpinch: ((this: GlobalEventHandlers, ev: PinchEvent) => any) | null;
+        onpinchend: ((this: GlobalEventHandlers, ev: PinchEndEvent) => any) | null;
+        onrotatestart: ((this: GlobalEventHandlers, ev: RotateStartEvent) => any) | null;
+        onrotate: ((this: GlobalEventHandlers, ev: RotateEvent) => any) | null;
+        onrotateend: ((this: GlobalEventHandlers, ev: RotateEndEvent) => any) | null;
+    }
     interface Window {
         gestureProvider: GestureProvider;
+        GLOBAL_EVENT_DISPATCHER: typeof GLOBAL_EVENT_DISPATCHER;
     }
     interface GlobalEventHandlersEventMap extends GestureEventMap {}
     interface EventTarget {
@@ -397,6 +450,7 @@ declare global {
 }
 
 if (TouchEvent) window.gestureProvider = new GestureProvider();
+if (!window.GLOBAL_EVENT_DISPATCHER) window.GLOBAL_EVENT_DISPATCHER = GLOBAL_EVENT_DISPATCHER;
 
 export {
     TapEvent,

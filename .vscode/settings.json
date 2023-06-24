@@ -1,0 +1,29 @@
+{
+    "cSpell.words": [
+        "doubletap",
+        "longpress",
+        "ondoubletap",
+        "onlongpress",
+        "onpan",
+        "onpanend",
+        "onpanstart",
+        "onpinch",
+        "onpinchend",
+        "onpinchstart",
+        "onrotate",
+        "onrotateend",
+        "onrotatestart",
+        "onswipe",
+        "onswipeend",
+        "onswipestart",
+        "ontap",
+        "panend",
+        "panstart",
+        "pinchend",
+        "pinchstart",
+        "rotateend",
+        "rotatestart",
+        "swipeend",
+        "swipestart"
+    ]
+}
